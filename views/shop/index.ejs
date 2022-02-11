@@ -1,15 +1,15 @@
-<%- include('includes/head.ejs') %>
-    <link rel="stylesheet" href="/css/product.css">
+<%- include('../includes/head.ejs') %>
+<link rel="stylesheet" href="/css/product.css">
 </head>
 
 <body>
-<%- include('includes/nav.ejs') %>
+<%- include('../includes/nav.ejs') %>
 
 <main>
     <% if (prods.length > 0) { %>
         <div class="grid">
             <% prods.forEach((product) => { %>
-                 <article class="card product-item">
+                <article class="card product-item">
                     <header class="card__header">
                         <h1 class="product__title"><%= product.title %></h1>
                     </header>
@@ -27,7 +27,7 @@
             <% })%>
         </div>
     <% } else {%>
-    <h1>No Products Found</h1>
+        <h1>No Products Found</h1>
     <% } %>
 </main>
-<%- include('includes/end.ejs') %>
+<%- include('../includes/end.ejs') %>
