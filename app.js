@@ -7,6 +7,7 @@ const expressHbs = require('express-handlebars');
 const errorController = require('./controllers/error');
 const User = require('./models/user');
 const db = require('./util/database');
+require('dotenv/config');
 
 const app = express();
 
@@ -46,7 +47,7 @@ app.use(authRoutes);
 
 app.use(errorController.notFoundPage);
 
-mongoose.connect('mongodb+srv://Andruha:ws4xZDQNofFQikBv@cluster0.cgxbfxr.mongodb.net/shop')
+mongoose.connect(process.env.DB_CONNECTION)
     .then(result => {
         User.findOne().then(user => {
                 if(!user){
