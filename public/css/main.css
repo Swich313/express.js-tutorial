@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,700');
 
 * {
     box-sizing: border-box;
@@ -19,14 +19,22 @@ form {
     display: inline;
 }
 
-.centered{
+.centered {
     text-align: center;
+}
+
+.image {
+    height: 20rem;
+}
+
+.image img {
+    height: 100%;
 }
 
 .main-header {
     width: 100%;
     height: 3.5rem;
-    background-color: #dbc441;
+    background-color: #00695c;
     padding: 0 1.5rem;
     display: flex;
     align-items: center;
@@ -52,18 +60,25 @@ form {
     padding: 0;
 }
 
-.main-header__item a {
+.main-header__item a,
+.main-header__item button {
+    font: inherit;
+    background: transparent;
+    border: none;
     text-decoration: none;
-    color: black;
+    color: white;
+    cursor: pointer;
 }
 
 .main-header__item a:hover,
 .main-header__item a:active,
-.main-header__item a.active {
+.main-header__item a.active,
+.main-header__item button:hover,
+.main-header__item button:active {
     color: #ffeb3b;
 }
 
-.mobile-nav{
+.mobile-nav {
     width: 30rem;
     height: 100vh;
     max-width: 90%;
@@ -75,13 +90,13 @@ form {
     padding: 2rem 1rem 1rem 2rem;
     transform: translateX(-100%);
     transition: transform 0.3s ease-out;
-    }
+}
 
-.mobile-nav.open{
+.mobile-nav.open {
     transform: translateX(0);
 }
 
-.mobile-nav__item-list{
+.mobile-nav__item-list {
     list-style: none;
     display: flex;
     flex-direction: column;
@@ -89,12 +104,12 @@ form {
     padding: 0;
 }
 
-.mobile-nav__item{
+.mobile-nav__item {
     margin: 1rem;
     padding: 0;
 }
 
-.mobile-nav__item a{
+.mobile-nav__item a {
     text-decoration: none;
     color: black;
     font-size: 1.5rem;
@@ -103,13 +118,13 @@ form {
 
 .mobile-nav__item a:active,
 .mobile-nav__item a:hover,
-.mobile-nav__item a.active{
+.mobile-nav__item a.active {
     background: #00695c;
     color: white;
     border-radius: 3px;
 }
 
-#side-menu-toggle{
+#side-menu-toggle {
     border: 1px solid white;
     font: inherit;
     padding: 0.5rem;
@@ -119,70 +134,69 @@ form {
     cursor: pointer;
 }
 
-#side-menu-toggle:focus{
+#side-menu-toggle:focus {
     outline: none;
 }
 
 #side-menu-toggle:active,
-#side-menu-toggle:hover{
+#side-menu-toggle:hover {
     color: #ffeb3b;
     border-color: #ffeb3b;
 }
 
-.backdrop{
+.backdrop {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100vh;
-    background: rgba(0,0,0,0.5);
+    background: rgba(0, 0, 0, 0.5);
     z-index: 5;
     display: none;
 }
 
-.grid{
+.grid {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
-    align-content: stretch;
+    align-items: stretch;
 }
 
-.card{
-    box-shadow: 0 2px 8px rgba(0,0,0,0.26);
+.card {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
 }
 
 .card__header,
-.card__content{
-    padding: 1rem ;
-    text-align: center;
+.card__content {
+    padding: 1rem;
 }
 
 .card__header h1,
 .card__content h1,
 .card__content h2,
-.card__content p{
+.card__content p {
     margin: 0;
 }
 
-.card__image{
+.card__image {
     width: 100%;
 }
 
-.card__image img{
+.card__image img {
     width: 100%;
 }
 
-.card__actions{
+.card__actions {
     padding: 1rem;
     text-align: center;
 }
 
 .card__actions button,
-.card__actions a{
+.card__actions a {
     margin: 0 0.25rem;
 }
 
-.btn{
+.btn {
     display: inline-block;
     padding: 0.25rem 1rem;
     text-decoration: none;
@@ -195,17 +209,28 @@ form {
 }
 
 .btn:hover,
-.btn:active{
+.btn:active {
     background-color: #00695c;
     color: white;
 }
 
-@media(min-width: 768px){
-    .main-header__nav{
+.btn.danger {
+    color: red;
+    border-color: red;
+}
+
+.btn.danger:hover,
+.btn.danger:active {
+    background: red;
+    color: white;
+}
+
+@media (min-width: 768px) {
+    .main-header__nav {
         display: flex;
     }
 
-    #side-menu-toggle{
+    #side-menu-toggle {
         display: none;
     }
 }
