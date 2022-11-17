@@ -75,10 +75,10 @@ app.use(authRoutes);
 app.use(errorController.notFoundPage);
 mongoose.connect(process.env.DB_CONNECTION)
     .then(result => {
-        // app.listen(PORT, hostname, () => {
-        //     console.log(`Server is running at http://${hostname}:${PORT}`)
-        // });
-        app.listen(3000);
+        app.listen(PORT, hostname, () => {
+            console.log(`Server is running at http://${hostname}:${PORT}`)
+        });
+        // app.listen(3000);
     })
     .catch(err => console.log(err));
 
