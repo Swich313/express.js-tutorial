@@ -37,6 +37,7 @@ const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
 
 const PORT = 3000;
+const hostname = '127.0.0.1';
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -72,9 +73,11 @@ app.use(shopRoutes);
 app.use(authRoutes);
 
 app.use(errorController.notFoundPage);
-
 mongoose.connect(process.env.DB_CONNECTION)
     .then(result => {
+        // app.listen(PORT, hostname, () => {
+        //     console.log(`Server is running at http://${hostname}:${PORT}`)
+        // });
         app.listen(3000);
     })
     .catch(err => console.log(err));
