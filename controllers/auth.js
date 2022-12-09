@@ -2,11 +2,13 @@ const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 const sendgridTransport = require('nodemailer-sendgrid-transport');
 const crypto = require('crypto');
+const { validationResult } = require('express-validator');
 require('dotenv/config');
 
 
 const User = require('../models/user');
 const Product = require("../models/product");
+const {escapeRegExpChars} = require("ejs/lib/utils");
 
 const smtpConfig = {
     host: 'smtp.ukr.net',
@@ -39,6 +41,11 @@ exports.getLogin = (req, res, next) => {
       path: '/login',
       pageTitle: 'Login',
       errorMessage: message,
+      oldInput: {
+            email: '',
+            password: '',
+        },
+        validationErrors: [],
   });
 };
 
@@ -53,17 +60,47 @@ exports.getSignup = (req, res, next) => {
         path: '/signup',
         pageTitle: 'Signup',
         errorMessage: message,
+        oldInput: {
+            email: '',
+            password: '',
+            confirmPassword: '',
+        },
+        validationErrors: [],
+
     });
 };
 
 exports.postLogin = (req, res, next) => {
     const email = req.body.email;
-    const password = req.body.password;
+    const password = req.body.password
+    const errors = validationResult(req);
+
+    if(!errors.isEmpty()){
+        console.log(errors.array());
+        return res.status(422).render('auth/login', {
+            path: '/login',
+            pageTitle: 'Login',
+            errorMessage: errors.array()[0].msg,
+            oldInput: {
+                email: email,
+                password: password,
+            },
+            validationErrors: errors.array(),
+        });
+    }
     User.findOne({email: email})
         .then(user => {
             if(!user) {
-                req.flash('error', 'Invalid email or password!');
-                return res.redirect('/login');
+                return res.status(422).render('auth/login', {
+                    path: '/login',
+                    pageTitle: 'Login',
+                    errorMessage: 'Invalid email or password!',
+                    oldInput: {
+                        email: email,
+                        password: password,
+                    },
+                    validationErrors: [{param: 'email', param: 'password'}],
+                });
             }
             bcrypt.compare(password, user.password)
                 .then(doMatch => {
@@ -90,13 +127,28 @@ exports.postLogin = (req, res, next) => {
 exports.postSignup = (req, res, next) => {
     const email = req.body.email;
     const password = req.body.password;
-    const confirmPassword = req.body.confirmPassword;
-    User.findOne({email: email})
-        .then(userDoc => {
-            if(userDoc) {
-                req.flash('error', 'Email already exists!');
-                return res.redirect('/signup');
-            }
+    const errors = validationResult(req);
+    if (!errors.isEmpty())
+    {
+        console.log(errors.array());
+        return res.status(422).render('auth/signup', {
+            path: '/signup',
+            pageTitle: 'Signup',
+            errorMessage: errors.array()[0].msg,
+            oldInput: {
+                email: email,
+                password: password,
+                confirmPassword: req.body.confirmPassword
+            },
+            validationErrors: errors.array(),
+        });
+    }
+    // User.findOne({email: email})
+    //     .then(userDoc => {
+    //         if(userDoc) {
+    //             req.flash('error', 'Email already exists!');
+    //             return res.redirect('/signup');
+    //         }
             return bcrypt.hash(password, 12)
                 .then(hashedPassword => {
                     const user = new User({
@@ -121,8 +173,7 @@ exports.postSignup = (req, res, next) => {
                         } else {
                             console.log('Email sent: ' + info.response);
                         }
-                    });
-                })
+                    })
         })
         .catch(err => console.log(err));
 };
@@ -145,17 +196,36 @@ exports.getResetPassword = (req, res, next) => {
         path: '/reset',
         pageTitle: 'Reset Password',
         errorMessage: message,
+        oldInput: {
+            email: '',
+        },
+        validationErrors: [],
     });
 };
 
 exports.postResetPassword = (req, res, next) => {
+    const errors = validationResult(req);
+    const email = req.body.email;
+
+    if(!errors.isEmpty()){
+        console.log(errors.array());
+        return res.status(422).render('auth/password-reset', {
+            path: '/reset',
+            pageTitle: 'Reset Password',
+            errorMessage: errors.array()[0].msg,
+            oldInput: {
+                email: email,
+            },
+            validationErrors: errors.array(),
+        });
+    }
     crypto.randomBytes(32, (err, buffer) => {
        if (err) {
            console.log(err);
            return res.redirect('/reset');
        }
        const token = buffer.toString('hex');
-        User.findOne({email: req.body.email})
+        User.findOne({email: email})
             .then(user => {
                 if(!user) {
                     req.flash('error', 'No account with that email found!');
@@ -168,7 +238,7 @@ exports.postResetPassword = (req, res, next) => {
             .then(result => {
                 const mailOptions = {
                     from: process.env.EMAIL_UKR_NET,
-                    to: req.body.email,
+                    to: email,
                     subject: 'Password reset',
                     html: `
                     <p>You requested a password reset</p>
@@ -205,6 +275,7 @@ exports.getNewPassword = (req, res, next) => {
                 errorMessage: message,
                 userId: user._id.toString(),
                 passwordToken: token,
+                validationErrors: []
             });
         })
         .catch(err => console.log(err));
@@ -215,6 +286,19 @@ exports.postNewPassword = (req, res, next) => {
     const userId = req.body.userId;
     const passwordToken = req.body.passwordToken;
     let resetUser;
+    const errors = validationResult(req);
+    if (!errors.isEmpty())
+    {
+        console.log(errors.array());
+        return res.status(422).render('auth/new-password', {
+            path: '/new-password',
+            pageTitle: 'Update your password\'',
+            errorMessage: errors.array()[0].msg,
+            userId: userId.toString(),
+            passwordToken: passwordToken,
+            validationErrors: errors.array(),
+        });
+    }
     User.findOne({
         resetToken: passwordToken,
         resetTokenExpiration: {$gt: Date.now()},
