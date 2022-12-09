@@ -16,7 +16,7 @@ router.post('/login',
             .isEmail()
             .withMessage('Please enter a valid Email!')
             .normalizeEmail(),
-        body('password', 'Please enter a valid password!')
+        body('password', 'Please enter a validPlease enter a valid password!')
             .isLength({min: 6})
             .isAlphanumeric()
             .trim()
