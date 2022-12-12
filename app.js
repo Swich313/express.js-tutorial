@@ -63,7 +63,7 @@ app.use((req, res, next) => {
             next();
         })
         .catch(err => {
-            throw new Error(err);
+            next(new Error(err));
         });
 });
 
@@ -78,7 +78,11 @@ app.use(shopRoutes);
 app.use(authRoutes);
 
 app.get('/500', errorController.get500);
+app.get('/522', errorController.get522);
 app.use(errorController.get404);
+app.use((error, req, res, next) => {
+    res.redirect('/500');
+});
 
 mongoose.connect(process.env.DB_CONNECTION)
     .then(result => {
@@ -87,7 +91,9 @@ mongoose.connect(process.env.DB_CONNECTION)
         });
         // app.listen(3000);
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+        console.log(err);
+    });
 
 
 // app.listen(PORT, () => {

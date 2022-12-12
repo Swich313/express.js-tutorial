@@ -13,3 +13,11 @@ exports.get500 = (req, res, next) => {
         isAuthenticated: req.session.isLoggedIn
     });
 };
+
+exports.get522 = (req, res, next) => {
+    res.status(522).render('522', {
+        pageTitle: 'Error!',
+        path: '/522',
+        isAuthenticated: req.session.isLoggedIn
+    });
+};
