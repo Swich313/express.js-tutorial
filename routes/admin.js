@@ -20,8 +20,8 @@ router.post('/add-product',
             .isString()
             .isLength({min: 10, max: 80})
             .trim(),
-        body('imageUrl', 'Please enter a valid image URL!')
-            .isURL(),
+        // body('imageUrl', 'Please enter a valid image URL!')
+        //     .isURL(),
         body('price', 'Please enter a valid price!')
             .isFloat(),
         body('description', 'Description has to be up to 255 letters long!')
@@ -39,8 +39,8 @@ router.post('/edit-product',
             .isString()
             .isLength({min: 10, max: 80})
             .trim(),
-        body('imageUrl', 'Please enter a valid image URL!')
-            .isURL(),
+        // body('imageUrl', 'Please enter a valid image URL!')
+            // .isURL(),
         body('price', 'Please enter a valid price!')
             .isFloat(),
         body('description', 'Description has to be up to 255 letters long!')
