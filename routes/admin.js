@@ -18,7 +18,7 @@ router.post('/add-product',
     [
         body('title', 'Title has to be from 10 to 80 letters long!')
             .isString()
-            .isLength({min: 10, max: 80})
+            .isLength({min: 5, max: 80})
             .trim(),
         // body('imageUrl', 'Please enter a valid image URL!')
         //     .isURL(),
@@ -37,7 +37,7 @@ router.post('/edit-product',
     [
         body('title', 'Title has to be from 10 to 80 letters long!')
             .isString()
-            .isLength({min: 10, max: 80})
+            .isLength({min: 5, max: 80})
             .trim(),
         // body('imageUrl', 'Please enter a valid image URL!')
             // .isURL(),

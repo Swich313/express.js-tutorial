@@ -259,3 +259,25 @@ form {
     }
 }
 
+.pagination {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.pagination a {
+    text-decoration: none;
+    color: #00695c;
+    padding: 0.5rem 1rem;
+    border: 1px solid #00695c;
+    margin: 0 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+
+}
+
+.pagination a:hover, .pagination a:active, .pagination a.active {
+    background-color: #00695c;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.36);
+}
