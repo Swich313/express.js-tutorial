@@ -4,6 +4,8 @@ const PDFDocument  = require('pdfkit');
 require('dotenv/config');
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_API_KEY);
+// const stripe = require('stripe')('sk_test_51MFc5CAMO6TrPQt9uobrbU3YoZEjYMSPt4nx8LLffy0PNBXGCmsoLp1UNFFkgYqsj2akczUHdjfKbWKv8QVzcwuy00t9rX7TEq');
+
 
 const Product = require('../models/product');
 const Order = require('../models/order');
@@ -132,8 +134,9 @@ exports.postCartDeleteProduct = (req, res, next) => {
 };
 
 exports.getCheckout = (req, res, next) => {
-    let product;
+    let products;
     let total = 0;
+    console.log(req.protocol + '://' + req.get('host') + '/checkout/success')
     req.user
         .populate('cart.items.productId')
         // .populate('cart.items.price')
@@ -144,22 +147,26 @@ exports.getCheckout = (req, res, next) => {
             total = 0;
             products.forEach(p => {
                 total += p.quantity * p.productId.price;
-            })
+            });
             return stripe.checkout.sessions.create({
                 payment_method_types: ['card'],
                 line_items: products.map(p => {
                     return {
-                        //name: p.productId.title,
-                        description: p.productId.description,
-                        price: p.productId.price * 100,
-                        currency: 'usd',
+                        price_data: {
+                            currency: 'usd',
+                            unit_amount: p.productId.price * 100,
+                            product_data: {
+                                name: p.productId.title,
+                                description: p.productId.description,
+                            },
+                        },
                         quantity: p.quantity,
                     }
                 }),
+                mode: 'payment',
                 success_url: req.protocol + '://' + req.get('host') + '/checkout/success',
                 cancel_url: req.protocol + '://' + req.get('host') + '/checkout/cancel',
-            })
-
+            });
         })
         .then(session => {
             res.render('shop/checkout', {
@@ -175,7 +182,7 @@ exports.getCheckout = (req, res, next) => {
             const error =  new Error(err);
             error.httpStatusCode = 500;
             return next(err);
-            console.log(err)
+            console.log(error)
         });
 };
 
@@ -202,7 +209,7 @@ exports.getCheckoutSuccess = (req, res, next) => {
             return order.save();
         })
         .then(() => {
-            req.user.clearCart();
+            return req.user.clearCart();
         })
         .then(() => {
             res.redirect('/orders');
