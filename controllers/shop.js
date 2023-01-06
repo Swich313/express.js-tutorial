@@ -4,8 +4,6 @@ const PDFDocument  = require('pdfkit');
 require('dotenv/config');
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_API_KEY);
-// const stripe = require('stripe')('sk_test_51MFc5CAMO6TrPQt9uobrbU3YoZEjYMSPt4nx8LLffy0PNBXGCmsoLp1UNFFkgYqsj2akczUHdjfKbWKv8QVzcwuy00t9rX7TEq');
-
 
 const Product = require('../models/product');
 const Order = require('../models/order');
@@ -223,6 +221,7 @@ exports.getCheckoutSuccess = (req, res, next) => {
 
 exports.getOrders = (req, res, next) => {
     Order.find({"user.userId": req.user._id})
+        .populate('products.product')
         .then(orders => {
             res.render('shop/orders', {
                 path: '/orders',

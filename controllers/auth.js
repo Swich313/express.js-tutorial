@@ -8,7 +8,6 @@ require('dotenv/config');
 
 const User = require('../models/user');
 const Product = require("../models/product");
-const {escapeRegExpChars} = require("ejs/lib/utils");
 
 const smtpConfig = {
     host: 'smtp.ukr.net',

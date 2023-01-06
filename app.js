@@ -1,4 +1,7 @@
 const path = require('path');
+const fs = require('fs');
+const https = require('https');
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -7,6 +10,10 @@ const MongoDBStore = require('connect-mongodb-session')(session);
 const csrf = require('csurf');
 const flash = require('connect-flash');
 const multer = require('multer');
+const helmet = require('helmet');
+const compression = require('compression');
+const morgan = require('morgan');
+// const openssl = require('openssl-nodejs');
 
 const expressHbs = require('express-handlebars');
 const errorController = require('./controllers/error');
@@ -20,6 +27,10 @@ const store = new MongoDBStore({
    collection: 'sessions'
 });
 const csrfProtection = csrf();
+// openssl('openssl req -config csr.cnf -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -keyout key.key -out certificate.crt')
+
+// const privateKey = fs.readFileSync('server.key');
+// const certificate = fs.readFileSync('server.cert');
 
 const fileStorage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -58,7 +69,12 @@ const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
 
-const PORT = 3000;
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a'});
+
+app.use(helmet());
+app.use(compression());
+app.use(morgan('combined', {stream: accessLogStream}) );
+
 const hostname = '127.0.0.1';
 
 app.use(bodyParser.urlencoded({extended: false}));
@@ -113,16 +129,12 @@ app.use((error, req, res, next) => {
 
 mongoose.connect(process.env.DB_CONNECTION)
     .then(result => {
-        app.listen(PORT, hostname, () => {
-            console.log(`Server is running at http://${hostname}:${PORT}`)
+        // https.createServer({key: privateKey, cert: certificate}, app)
+            app.listen(process.env.PORT || 3000, hostname, () => {
+            console.log(`Server is running at http://${hostname}:${process.env.PORT}`)
         });
         // app.listen(3000);
     })
     .catch(err => {
         console.log(err);
     });
-
-
-// app.listen(PORT, () => {
-//     console.log(`Server is running on the port ${PORT}...`);
-// });
