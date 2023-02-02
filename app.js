@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs');
-const https = require('https');
+// const https = require('https');
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -15,7 +15,7 @@ const compression = require('compression');
 const morgan = require('morgan');
 // const openssl = require('openssl-nodejs');
 
-const expressHbs = require('express-handlebars');
+// const expressHbs = require('express-handlebars');
 const errorController = require('./controllers/error');
 const User = require('./models/user');
 const db = require('./util/database');
@@ -123,7 +123,7 @@ app.get('/500', errorController.get500);
 app.get('/522', errorController.get522);
 app.use(errorController.get404);
 app.use((error, req, res, next) => {
-    console.log(error);
+    // console.log(error);
     res.redirect('/500');
 });
 

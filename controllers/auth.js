@@ -166,7 +166,11 @@ exports.postSignup = (req, res, next) => {
                         to: email,
                         subject: 'Signup succeeded!',
                         text: 'Have You just sign up?',
-                        html: '<h1>You successfully signed up!</h1>'
+                        html: `
+                        <h1>You successfully signed up!</h1>
+                        <p>Click this <a href="https://node-bookshop.onrender.com/login/" target="_blank">link</a>  to login.</p>
+
+                        `
                     };
                     res.redirect('/login')
                     return transporter.sendMail(mailOptions, (err, info) => {
@@ -248,7 +252,7 @@ exports.postResetPassword = (req, res, next) => {
                     subject: 'Password reset',
                     html: `
                     <p>You requested a password reset</p>
-                    <p>Click this <a href="http://localhost:3000/reset/${token}">link</a>  to set a new password.</p>
+                    <p>Click this <a href="https://node-bookshop.onrender.com/reset/${token}" target="_blank">link</a>  to set a new password.</p>
                     `
                 };
                 res.redirect('/reset');
